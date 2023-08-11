@@ -6,8 +6,13 @@ const {
   getLibroById,
 } = require("../../src/controllers/libroController");
 const libroModel = require("../../src/models/libroModel");
+
+//Se hace un mock del modelo libros
 jest.mock("../../src/models/libroModel");
+
+//Se utiliza describe para agrupar las pruebas relacionadas con el controlador de libros
 describe("Libro Controller", () => {
+  //Se declara un objeto mockRes en el que se simulan los metodos status y json
   let mockRes;
   beforeEach(() => {
     mockRes = {
@@ -15,6 +20,8 @@ describe("Libro Controller", () => {
       json: jest.fn(),
     };
   });
+
+  //Se definen diferentes pruebas utilizando la función test para cada función del controlador.
   test("getLibros debería obtener todos los libros", async () => {
     const mockLibros = [
       { id: "1", title: "Libro 1" },
@@ -26,6 +33,7 @@ describe("Libro Controller", () => {
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith(mockLibros);
   });
+
   test("getLibroById debería obtener un libro", async () => {
     const mockLibro = {
       id: "1",
@@ -38,6 +46,7 @@ describe("Libro Controller", () => {
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith(mockLibro);
   });
+
   test("createLibro debería crear un nuevo libro", async () => {
     const mockLibro = { id: "1", titulo: "Nuevo Libro", autor: "Juan Perez" };
     mockLibro.save = () => {};
@@ -47,6 +56,7 @@ describe("Libro Controller", () => {
     expect(mockRes.status).toHaveBeenCalledWith(201);
     expect(mockRes.json).toHaveBeenCalledWith(mockLibro);
   });
+
   test("updateLibro debería actualizar un libro existente", async () => {
     const libroId = "1";
     const libroActualizado = {
@@ -65,6 +75,7 @@ describe("Libro Controller", () => {
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith(libroActualizadoMock);
   });
+
   test("updateLibro debería devolver un error si el libro no existe", async () => {
     libroModel.findByIdAndUpdate.mockResolvedValue(null);
     const mockReq = {
@@ -75,12 +86,15 @@ describe("Libro Controller", () => {
     expect(mockRes.status).toHaveBeenCalledWith(404);
     expect(mockRes.json).toHaveBeenCalledWith({ error: "Libro no encontrado" });
   });
+
   test("deleteLibro debería eliminar un libro existente", async () => {
     const mockLibroEliminado = {
       titulo: "Libro Eliminado",
       autor: "Autor Eliminado",
     };
+
     libroModel.findByIdAndRemove.mockResolvedValue(mockLibroEliminado);
+
     const mockReq = { params: { id: "1" } };
     await deleteLibro(mockReq, mockRes);
     expect(libroModel.findByIdAndRemove).toHaveBeenCalledWith(

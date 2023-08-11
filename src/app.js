@@ -1,4 +1,5 @@
 const express = require("express");
+const usuariosRoutes = require("./routes/usuarios");
 
 const { auth } = require("express-oauth2-jwt-bearer");
 const errorHandler = require("./middlewares/errorHandler");
@@ -22,6 +23,7 @@ const librosRouter = require("./routes/libros");
 
 //Configuramos el middleware de autenticacion
 app.use("/api/libros", autenticacion,  librosRouter);
+app.use("/usuarios", usuariosRoutes);
 
 app.use(errorHandler);
 
